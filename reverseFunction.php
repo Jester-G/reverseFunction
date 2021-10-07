@@ -1,36 +1,42 @@
 <?php
 function reverse(string $str) : string {
 
-$arr = explode(' ', $str);
+$words = explode(' ', $str);
 $result = '';
 
-foreach ($arr as $a) {
-    $letters = preg_split('//u', $a, null, PREG_SPLIT_NO_EMPTY);
+foreach ($words as $word) {
+    // разбиваем слово на массив букв
+    $letters = preg_split('//u', $word, null, PREG_SPLIT_NO_EMPTY);
     $reversed = [];
     
-    $w = preg_grep('/[\w]/u', $letters);
-    //$letters2 = preg_split('//u', $w, null, PREG_SPLIT_NO_EMPTY);
+    // выбираем из массива $letters только буквы (без символов) с сохранением ключей
+    $onlyLetters = preg_grep('/[\w]/u', $letters);    
     
-    $diff = array_diff($letters, $w);
+    // ищем отличие в двух массивах и получаем массив только символов
+    // с сохранением ключей
+    $diff = array_diff($letters, $onlyLetters);
     
-    foreach ($w as $k => $v) {
+    foreach ($onlyLetters as $k => $v) {
+
         if ($v == mb_strtoupper($v)) {
+
             if (ctype_digit($v) || $v == '_') {
-                $reversed[$k] = array_pop($w);
+                $reversed[$k] = array_pop($onlyLetters);
             } else {
-                $reversed[$k] = mb_strtoupper(array_pop($w));
+                $reversed[$k] = mb_strtoupper(array_pop($onlyLetters));
             }
+
         } else {
-            $reversed[$k] = mb_strtolower(array_pop($w));
+            $reversed[$k] = mb_strtolower(array_pop($onlyLetters));
         }
     }
     
     foreach ($diff as $k => $v) {
         $reversed[$k] = $v;
     }
-    //foreach ($)
+    
     ksort($reversed);
-    //print_r($reversed);
+    
     
     foreach ($reversed as $v) {
         $result .= $v;
